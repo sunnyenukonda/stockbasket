@@ -12,7 +12,7 @@ import Select from '@material-ui/core/Select';
 import '../../styles/styles.css';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
-import graph from '../../images/graph.JPG';
+import graph from '../../images/graph.png';
 
 const useStyles = makeStyles((theme) => ({
   newsPage: {

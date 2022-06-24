@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext, createContext, useEffect, useState } from "react";
 import { makeStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -13,6 +13,9 @@ import '../../styles/styles.css';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import graph from '../../images/graph.png';
+import axios from "axios";
+import Button from '@material-ui/core/Button';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 const useStyles = makeStyles((theme) => ({
   newsPage: {
@@ -46,15 +49,45 @@ const useStyles = makeStyles((theme) => ({
 export default function InfoTab() {
   const classes = useStyles();
 
+
+  const [data, setData] = useState([]);
+  const [peerdata, setPeerData] = useState([]);
+  const apiKey = "caps2uaad3i1rqbdg54g";
+
+const [textInput, setTextInput] = useState('');
+
+const [showLoader, setLoaderValue] = useState(false);
+
+const [intialLoad, setInitialLoadValue] = useState(true);
+
+let link = `https://widget.finnhub.io/widgets/stocks/chart?symbol=${textInput}&watermarkColor=blue&backgroundColor=black&textColor=black`;
+
+const getStockInfo = () => {
+  let one = `https://finnhub.io/api/v1/stock/recommendation?symbol=${textInput}&token=${apiKey}`;
+  let two = `https://finnhub.io/api/v1/stock/peers?symbol=${textInput}&token=${apiKey}`;
+
+  const requestOne = axios.get(one);
+  const requestTwo = axios.get(two);
+   setLoaderValue(true);
+   axios.all([requestOne, requestTwo]).then(axios.spread((...responses) => {
+      setLoaderValue(false);
+      setInitialLoadValue(false);
+      setData(responses[0].data);
+      setPeerData(responses[1].data);
+      //console.log(responses[2].data)
+      // use/access the results
+    })).catch(errors => {
+      // react on errors.
+      console.log(errors)
+    });
+    };
+
+
   const [state, setState] = React.useState({
     age: '',
     name: 'hai',
   });
-  const [selectedIndex, setSelectedIndex] = React.useState(1);
 
-  const handleListItemClick = (event, index) => {
-    setSelectedIndex(index);
-  };
 
   const handleChange = (event) => {
     const name = event.target.name;
@@ -63,6 +96,12 @@ export default function InfoTab() {
       [name]: event.target.value,
     });
   };
+
+
+
+  const handleTextInputChange = event => {
+        setTextInput(event.target.value);
+    };
 
   return (
     <div className={classes.newsPage}>
@@ -78,27 +117,46 @@ export default function InfoTab() {
               <Grid item lg={3} md={3} sm={3} xs={3}>
               <TextField
                 id="outlined-secondary"
-                label="Search"
+                label="Search for Stock"
                 variant="outlined"
                 color="primary"
+                value= {textInput}
                 className={classes.selectProps}
+                onChange= {handleTextInputChange}
               />
               </Grid>
-              <Grid item lg={3} md={3} sm={3} xs={3}>
-              <div className="info">
-                <h3 className="info__title">Period: Jan 01, 2022</h3>
-                <Grid container>
-                  <Grid item xs={6} lg={6} md={6} sm={6}>
-                      <h3 className="baskettitle">Buy: 7</h3>
-                  </Grid>
-                  <Grid item xs={6} lg={6} md={6} sm={6}>
-                       <h3 className="baskettitle">Sell: 0</h3>
-                  </Grid>
-                </Grid>
-              </div>
+              <Grid item lg={2} md={2} sm={2} xs={2}>
+              <Button variant="contained" color="primary" onClick={() => getStockInfo()}>
+                Search
+              </Button>
               </Grid>
               <Grid item lg={3} md={3} sm={3} xs={3}>
-              <img src={graph} alt="graph"/>
+              {
+                showLoader ?
+                <CircularProgress /> : ''
+              }
+              {
+                data.length > 0 ?
+                <div className="info">
+                  <h3 className="info__title">Period: {data[0].period}</h3>
+                  <Grid container>
+                    <Grid item xs={6} lg={6} md={6} sm={6}>
+                        <h3 className="baskettitle">Buy: {data[0].buy}</h3>
+                    </Grid>
+                    <Grid item xs={6} lg={6} md={6} sm={6}>
+                         <h3 className="baskettitle">Sell: {data[0].sell}</h3>
+                    </Grid>
+                  </Grid>
+                   </div> :
+                   !intialLoad ?
+                   <div className="info">
+                     <h3 className="info__title">No Information Found</h3>
+                    </div> : ''
+              }
+              </Grid>
+
+              <Grid item lg={2} md={2} sm={2} xs={2}>
+              <iframe src={link} width="400" height="300"></iframe>
               </Grid>
             </Grid>
         </Grid>
@@ -110,14 +168,22 @@ export default function InfoTab() {
             alignItems="flex-start"
           >
               <Grid item lg={12} md={12} sm={12} xs={12}>
-              <div className="info1">
-                  <div className="info3"> <div className="info4"> PEER LIST </div> </div>
-                    <h3 className="info__title2">"EMC"</h3>
-                    <h3 className="info__title2">"HPQ"</h3>
-                    <h3 className="info__title2">"DELL"</h3>
-                    <h3 className="info__title2">"WDC"</h3>
-                    <h3 className="info__title2">"HPE"</h3>
-              </div>
+              {
+                !intialLoad ?
+                <div className="info1">
+                    <div className="info3"> <div className="info4"> PEER LIST </div> </div>
+                    {
+                      peerdata.length > 0
+                      ?
+                      peerdata.map((data, index) => (
+                          <h3 className="info__title2" key={index}>{data}</h3>
+                        ))
+                      :
+                      <h3 className="info__title2">No Information Found</h3>
+                    }
+                </div> : ''
+              }
+
               </Grid>
             </Grid>
         </Grid>

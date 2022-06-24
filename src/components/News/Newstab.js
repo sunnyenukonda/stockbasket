@@ -1,68 +1,36 @@
-import React, { useContext } from "react";
+import React, { useContext, createContext, useEffect, useState } from "react";
+import axios from "axios";
 import NewsArticle from "./NewsArticle";
 import { withStyles } from '@material-ui/core/styles';
 import styles from '../../styles/styles.js';
 import '../../styles/styles.css';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 function News(props) {
-//  const { data } = useContext(NewsContext);
+
+  const [data, setData] = useState();
+    const apiKey = "0fd531e601804a05be057d22155ac7cd";
+
+    useEffect(() => {
+      axios
+        .get(
+          `https://newsapi.org/v2/top-headlines?category=business&country=us&pageSize=6&apiKey=${apiKey}`
+        )
+        .then((response) => setData(response.data))
+        .catch((error) => console.log(error));
+    }, []);
+
+
 const { classes } = props;
-const data = {"articles":
-[
-    {
-        "url" : 1,
-        "title" : "Lorem Ipsum has been the industry's standard",
-        "description" : "Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin",
-        "author" : "H. Rackham",
-        "publishedAt" : "Lorem Ipsum",
-        "source" : "Lorem Ipsum"
-    },{
-        "url" : 2,
-        "title" : "Lorem Ipsum has been the industry's standard",
-        "description" : "Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin",
-        "author" : "H. Rackham",
-        "publishedAt" : "Lorem Ipsum",
-        "source" : "Lorem Ipsum"
-    },{
-        "url" : 3,
-        "title" : "Lorem Ipsum has been the industry's standard",
-        "description" : "Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin",
-        "author" : "H. Rackham",
-        "publishedAt" : "Lorem Ipsum",
-        "source" : "Lorem Ipsum"
-    },{
-        "url" : 4,
-        "title" : "Lorem Ipsum has been the industry's standard",
-        "description" : "Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin",
-        "author" : "H. Rackham",
-        "publishedAt" : "Lorem Ipsum",
-        "source" : "Lorem Ipsum"
-    },{
-        "url" : 5,
-        "title" : "Lorem Ipsum has been the industry's standard",
-        "description" : "Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin",
-        "author" : "H. Rackham",
-        "publishedAt" : "Lorem Ipsum",
-        "source" : "Lorem Ipsum"
-    },{
-        "url" : 6,
-        "title" : "Lorem Ipsum has been the industry's standard",
-        "description" : "Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin",
-        "author" : "H. Rackham",
-        "publishedAt" : "Lorem Ipsum",
-        "source" : "Lorem Ipsum"
-    }
-]
-};
 
   return (
     <div className={classes.newsPage}>
       <div className="all__news">
       {data
-        ? data.articles.map((news) => (
-            <NewsArticle data={news} key={news.url} />
+        ? data.articles.map((news, index) => (
+            <NewsArticle data={news} key={index} />
           ))
-        : "Loading"}
+        : <CircularProgress size={100} thickness={5}/>}
       </div>
     </div>
   );

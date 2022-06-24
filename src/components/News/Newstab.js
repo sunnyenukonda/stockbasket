@@ -9,14 +9,14 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 function News(props) {
 
   const [data, setData] = useState();
-    const apiKey = "0fd531e601804a05be057d22155ac7cd";
+    const apiKey = "01ff4be5-eb61-469b-a77d-b7a73b43fc18";
 
     useEffect(() => {
       axios
         .get(
-          `https://newsapi.org/v2/top-headlines?category=business&country=us&pageSize=6&apiKey=${apiKey}`
+          `https://content.guardianapis.com/search?page=6&q=markets&api-key=${apiKey}`
         )
-        .then((response) => setData(response.data))
+        .then((response) => setData(response.data.response.results))
         .catch((error) => console.log(error));
     }, []);
 
@@ -27,7 +27,7 @@ const { classes } = props;
     <div className={classes.newsPage}>
       <div className="all__news">
       {data
-        ? data.articles.map((news, index) => (
+        ? data.map((news, index) => (
             <NewsArticle data={news} key={index} />
           ))
         : <CircularProgress size={100} thickness={5}/>}

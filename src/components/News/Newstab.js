@@ -14,7 +14,7 @@ function News(props) {
     useEffect(() => {
       axios
         .get(
-          `https://newsapi.org/v2/top-headlines?category=business&country=us&pageSize=6&apiKey=${apiKey}`
+          `http://newsapi.org/v2/top-headlines?category=business&country=us&pageSize=6&apiKey=${apiKey}`
         )
         .then((response) => setData(response.data))
         .catch((error) => console.log(error));

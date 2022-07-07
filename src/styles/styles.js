@@ -69,6 +69,11 @@ var styles = (theme) => ({
     marginTop: 300,
     marginLeft: -180
   },
+  inValidText:{
+    marginTop: 450,
+    marginLeft: -350,
+    color: 'white'
+  },
   registerCard:{
     background: 'white !important',
     marginLeft: '25%',

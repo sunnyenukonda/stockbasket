@@ -1,14 +1,17 @@
 import Navbar from '../components/Navbar/Navbar';
-import React from 'react';
 import Grid from '@material-ui/core/Grid';
 import secLogo from '../images/secondary_logo.png';
 import { withStyles } from '@material-ui/core/styles';
 import styles from '../styles/styles.js';
 import Button from "@material-ui/core/Button";
 import {  Link } from "react-router-dom";
+import React, { useContext, createContext, useEffect, useState } from "react";
+import Axios from 'axios';
+import { Redirect } from "react-router-dom"
 
 function Main(props) {
   const { classes } = props;
+
   return (
       <React.Fragment>
       <Navbar/>

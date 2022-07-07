@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.background.paper,
     position: 'relative',
     overflow: 'auto',
-    maxHeight: 300,
+    maxHeight: 200,
    '&& .Mui-selected': {
      backgroundColor: '#bceffa !important',
    }
@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: 430
   },
   newsPage1: {
-    marginTop: -300,
+    marginTop: -200,
     marginLeft: 700
   },
   compareValue:{
@@ -49,7 +49,7 @@ export default function CompareList() {
 
   const [selectedIndex, setSelectedIndex] = React.useState();
   const [data, setData] = useState();
-        const apiKey = "7d3ef18c1fdf4a96bae41660955ccaf6";
+  const apiKey = "7d3ef18c1fdf4a96bae41660955ccaf6";
 
   const handleListItemClick = (event, index) => {
     setSelectedIndex(index);
@@ -61,13 +61,11 @@ export default function CompareList() {
 
   };
 
-  console.log(data);
-
   return (
     <div className={classes.newsPage}>
       <List className={classes.root} subheader={<li />}>
         {
-          ['BNDX - Vanguard Total International Bond ETF', 'GLD - SPDR Gold Trust', 'QQQ - Invesco QQQ Trust', 'VOO - Vanguard S&P 500 ETF', 'VTI - Vanguard Total Stock Market ETF', 'IVV - iShares Core S&P 500 ETF', 'SPY - SPDR S&P 500 ETF Trust'].map((sectionId) =>
+          [ 'QQQ - Invesco QQQ Trust', 'VOO - Vanguard S&P 500 ETF', 'VTI - Vanguard Total Stock Market ETF', 'IVV - iShares Core S&P 500 ETF', 'SPY - SPDR S&P 500 ETF Trust'].map((sectionId) =>
           (
           <li key={`section-${sectionId}`} className={classes.listSection}>
             <ul className={classes.ul}>

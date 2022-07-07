@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext, createContext, useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -11,6 +11,13 @@ import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import '../../styles/styles.css';
 import Grid from '@material-ui/core/Grid';
+import Input from '@material-ui/core/Input';
+import MenuItem from '@material-ui/core/MenuItem';
+import Checkbox from '@material-ui/core/Checkbox';
+import Button from "@material-ui/core/Button";
+import axios from "axios";
+import CircularProgress from '@material-ui/core/CircularProgress';
+
 
 const useStyles = makeStyles((theme) => ({
   newsPage: {
@@ -35,59 +42,204 @@ const useStyles = makeStyles((theme) => ({
     marginRight: 1020,
     paddingLeft: 70,
     background: '#bceffa'
+  },
+  button1:{
+    width: 150
+  },
+  loader:{
+    paddingLeft: 1000,
+    paddingTop: 300
   }
 }));
 
-export default function StockTab() {
+export default function StockTab(props) {
   const classes = useStyles();
+  const ITEM_HEIGHT = 48;
+  const ITEM_PADDING_TOP = 8;
+  const MenuProps = {
+    PaperProps: {
+      style: {
+        maxHeight: 300,
+        width: 250,
+      },
+    },
+  };
 
-  const [state, setState] = React.useState({
-    age: '',
-    name: 'hai',
-  });
+  const {token} = props;
+
+  const [selectedStocks, setSelectedStocks] = React.useState([]);
   const [selectedIndex, setSelectedIndex] = React.useState(1);
+  const [fundsArray, setFundsArray] = React.useState([]);
+  const [loader, setLoader] = React.useState(true);
+  let finnApiKey = 'caps2uaad3i1rqbdg54g';
+  const apiKey = 'f11dc3a8ddc543feb3407e94dc150518';
+  let [getT1, setT1] = React.useState(0);
+  let [getT2, setT2] = React.useState(0);
+  let  t3 = 0;
 
   const handleListItemClick = (event, index) => {
     setSelectedIndex(index);
   };
 
   const handleChange = (event) => {
-    const name = event.target.name;
-    setState({
-      ...state,
-      [name]: event.target.value,
-    });
+    setSelectedStocks(event.target.value);
   };
 
+  const reload = () => {
+    setLoader(true);
+      axios.post("http://localhost:8000/updateStocks",{
+        selectedStocks: selectedStocks,
+        userId: token.id
+      }).then((response) => {
+        if(response.data != undefined){
+          setSelectedStocks(response.data.products);
+          setFundsArray(response.data.products);
+          calculate(response.data.products);
+          setLoader(false);
+        }else{
+          //setInValidText(response.data.message);
+        }
+      });
+  };
+
+  useEffect(() => {
+    axios.post("http://localhost:8000/getStocks",{
+      userId: token.id
+    }).then((response) => {
+      if(response.data != undefined){
+        setSelectedStocks(response.data.products);
+        setFundsArray(response.data.products);
+        calculate(response.data.products);
+        setLoader(false);
+      }else{
+        //setInValidText(response.data.message);
+      }
+    });
+  }, []);
+
+  const calculate = (stocks) => {
+    let t1 = 0,t2 = 0, t3;
+    if(!stocks.length) setLoader(true);
+
+
+    stocks.map((stock, index) => {
+
+      const myArray = stock.split("-");
+      axios.get(
+          `https://finnhub.io/api/v1/stock/candle?symbol=${myArray[0]}&resolution=1&from=1641225600&to=1641225600&token=${finnApiKey}`
+        )
+        .then((response) => {
+          t1 = t1 + response.data.c[0];
+          setT1(t1);
+        })
+        .catch((error) => console.log(error));
+      axios.get(
+      `https://api.twelvedata.com/eod?symbol=${myArray[0]}&apikey=${apiKey}`
+      )
+      .then((response) => {
+        t2 = t2 + parseFloat(response.data.close);
+        setT2(t2);
+      })
+      .catch((error) => console.log(error));
+  });
+  //setLoader(false);
+  }
+
+t3 = ((getT2-getT1)/getT1)*100;
+if(t3 === NaN) t3 = 0.00;
+
+  let stocks = [
+    'AAPL-Apple',
+'MSFT-Microsoft',
+'GOOGL-Alphabet',
+'AMZN-Amazon',
+'TSLA-Tesla',
+'BRK-A-Berkshire Hathaway',
+'UNH-UnitedHealth',
+'JNJ-Johnson & Johnson',
+'META-Meta',
+'V-Visa',
+'TSM-Taiwan Semiconductor',
+'XOM-ExxonMobil',
+'NVDA-Nvidia',
+'PG-Procter & Gamble',
+'WMT-Walmart',
+'JPM-JPMorgan Chase',
+'BABA-Nvidia',
+'MA-Mastercard',
+'LLY-Eli Lilly',
+'PFE-Pfizer',
+'CVX-Chevron',
+'HD-Home Depot',
+'KO-Coca-Cola',
+'ABBV-AbbVie',
+'BAC-Bank of America',
+'PEP-Pepsi',
+'MRK-Merck',
+'VZ-Verizon',
+'COST-Costco',
+'TMO-Thermo Fisher',
+'TM-Toyota',
+'AZN-AstraZeneca',
+'NVO-Novo Nordisk',
+'ABT-Abbott Labs',
+'AVGO-Broadcom',
+'ORCL-Oracle',
+'DHR-Danaher',
+'MCD-McDonalds',
+'NVS-Novartis',
+'ASML-ASML',
+'CMCSA-Comcast',
+'ACN-Accenture',
+'CSCO-Cisco',
+'DIS-Disney',
+'ADBE-Adobe',
+'TMUS-T-Mobile',
+'CRM-Salesforce',
+'BMY-Bristol-Myers Squibb',
+'UPS-UPS',
+'NKE-Nike'
+];
+
   return (
+    !loader ?
     <div className={classes.newsPage}>
     <Grid container spacing={2}>
       <Grid item lg={4} md={4} sm={4} xs={4}>
       <FormControl variant="filled" className={classes.formControl}>
         <InputLabel htmlFor="filled-age-native-simple">Stocks</InputLabel>
         <Select
-          native
-          value={state.age}
-          onChange={handleChange}
-          inputProps={{
-            name: 'age',
-            id: 'filled-age-native-simple',
-          }}
-        >
-          <option aria-label="None" value="" />
-          <option value={10}>Apple</option>
-          <option value={20}>Meta</option>
-          <option value={30}>Snap</option>
+                  labelId="demo-mutiple-checkbox-label"
+                  id="demo-mutiple-checkbox"
+                  multiple
+                  value={selectedStocks}
+                  onChange={handleChange}
+                  input={<Input />}
+                  renderValue={(selected) => selected.join(', ')}
+                  MenuProps={MenuProps}
+                >
+                  {stocks.map((stock, index) => {
+                    return(
+                    <MenuItem key={stock} value={stock}>
+                      <Checkbox checked={selectedStocks.indexOf(stock) > -1} />
+                      <ListItemText primary={stock} />
+                    </MenuItem>);
+                  })}
         </Select>
+              <Button variant="contained" className={classes.button1} onClick={reload}>Reload</Button>
       </FormControl>
       </Grid>
       <Grid item lg={4} md={4} sm={4} xs={4}>
       <div className="news">
         <h3 className="news__title">Your fund includes:</h3>
         <div>
-          <h3 className="baskettitle">1. Apple</h3>
-          <h3 className="baskettitle">2. GM</h3>
-          <h3 className="baskettitle">3. Shell</h3>
+        {
+          fundsArray.length > 0 ?
+          fundsArray.map((fund, index) => {
+            return <h3 key={index} className="baskettitle">{fund}</h3>;
+          })
+          : ''
+        }
         </div>
       </div>
       </Grid>
@@ -98,12 +250,13 @@ export default function StockTab() {
         </Grid>
         <Grid item lg={8} md={8} sm={8} xs={8}>
           <div className={classes.compareValue}>
-           <h3 className="indices__greenpercentage">10.80%</h3>
+           <h3 className={(t3 > 0) ? "indices__greenpercentage" : "indices__redpercentage"}>{t3.toFixed(2)}%</h3>
            <h3>1 YR Return</h3>
           </div>
         </Grid>
       </Grid>
       </div>
     </div>
+    : <div className={classes.loader}><CircularProgress size={100} thickness={5}/></div>
   );
 }

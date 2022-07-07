@@ -24,6 +24,7 @@ import MailIcon from '@material-ui/icons/Mail';
 import MenuIcon from '@material-ui/icons/Menu';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import axios from "axios";
 
 function Sidebar(props) {
   const { classes } = props;
@@ -34,6 +35,17 @@ function Sidebar(props) {
     else if(selectedOption === 'compare') history.push("/compare");
     else if(selectedOption === 'stockbasket') history.push("/stockbasket");
     else if(selectedOption === 'stockinfo') history.push("/stockinfo");
+    else if(selectedOption === 'logout'){
+      axios.post("http://localhost:8000/logout",{}).then((response) => {
+        if(response.data != undefined){
+          console.log(response.data.res)
+        }else{
+          //setInValidText(response.data.message);
+        }
+      });
+      sessionStorage.setItem('token', null);
+      history.push("/");
+    }
     else history.push("/");
     };
   return (

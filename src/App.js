@@ -27,8 +27,6 @@ function App(props) {
 
   const token = getTToken();
 
-  console.log(token);
-
   const PrivateRoute = ({ component: Component, ...rest }) => (
   <Route {...rest} render={props => (
     (token != null) ? (

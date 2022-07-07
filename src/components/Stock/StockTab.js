@@ -87,7 +87,7 @@ export default function StockTab(props) {
 
   const reload = () => {
     setLoader(true);
-      axios.post("http://localhost:8000/updateStocks",{
+      axios.post("http://node-env.eba-2zra5gp3.us-east-2.elasticbeanstalk.com/updateStocks",{
         selectedStocks: selectedStocks,
         userId: token.id
       }).then((response) => {
@@ -103,7 +103,7 @@ export default function StockTab(props) {
   };
 
   useEffect(() => {
-    axios.post("http://localhost:8000/getStocks",{
+    axios.post("http://node-env.eba-2zra5gp3.us-east-2.elasticbeanstalk.com/getStocks",{
       userId: token.id
     }).then((response) => {
       if(response.data != undefined){
@@ -251,7 +251,7 @@ if(t3 === NaN) t3 = 0.00;
         <Grid item lg={8} md={8} sm={8} xs={8}>
           <div className={classes.compareValue}>
            <h3 className={(t3 > 0) ? "indices__greenpercentage" : "indices__redpercentage"}>{t3.toFixed(2)}%</h3>
-           <h3>1 YR Return</h3>
+           <h3>YTD return</h3>
           </div>
         </Grid>
       </Grid>

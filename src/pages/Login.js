@@ -24,7 +24,7 @@ function Login(props) {
   Axios.defaults.withCredentials = true;
 
   const login = () =>{
-    Axios.post("http://localhost:8000/login",{
+    Axios.post("http://node-env.eba-2zra5gp3.us-east-2.elasticbeanstalk.com/login",{
       email: email,
       password: password
     }).then((response) => {

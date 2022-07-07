@@ -39,7 +39,7 @@ function Register(props) {
     }
     else{
         setInValidText('');
-        Axios.post("http://localhost:8000/register",{
+        Axios.post("http://node-env.eba-2zra5gp3.us-east-2.elasticbeanstalk.com/register",{
           firstName: firstName,
           lastName: lastName,
           email: email,

@@ -118,7 +118,7 @@ export default function StockTab(props) {
   }, []);
 
   const calculate = (stocks) => {
-    let t1 = 0,t2 = 0, t3;
+    let t1 = 0,t2 = 0;
     if(!stocks.length) setLoader(true);
 
 
@@ -129,6 +129,7 @@ export default function StockTab(props) {
           `https://finnhub.io/api/v1/stock/candle?symbol=${myArray[0]}&resolution=1&from=1641225600&to=1641225600&token=${finnApiKey}`
         )
         .then((response) => {
+          console.log(response.data.c[0]);
           t1 = t1 + response.data.c[0];
           setT1(t1);
         })
@@ -137,6 +138,7 @@ export default function StockTab(props) {
       `https://api.twelvedata.com/eod?symbol=${myArray[0]}&apikey=${apiKey}`
       )
       .then((response) => {
+        console.log(response.data.close);
         t2 = t2 + parseFloat(response.data.close);
         setT2(t2);
       })
@@ -154,7 +156,7 @@ if(isNaN(t3)) t3 = 0.00;
 'GOOGL-Alphabet',
 'AMZN-Amazon',
 'TSLA-Tesla',
-'BRK-A-Berkshire Hathaway',
+'BRK.A-Berkshire Hathaway',
 'UNH-UnitedHealth',
 'JNJ-Johnson & Johnson',
 'META-Meta',

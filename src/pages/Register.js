@@ -39,7 +39,7 @@ function Register(props) {
     }
     else{
         setInValidText('');
-        Axios.post("http://node-env.eba-2zra5gp3.us-east-2.elasticbeanstalk.com/register",{
+        Axios.post("https://hidden-citadel-00931.herokuapp.com/register",{
           firstName: firstName,
           lastName: lastName,
           email: email,

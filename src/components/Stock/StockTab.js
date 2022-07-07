@@ -87,7 +87,7 @@ export default function StockTab(props) {
 
   const reload = () => {
     setLoader(true);
-      axios.post("http://node-env.eba-2zra5gp3.us-east-2.elasticbeanstalk.com/updateStocks",{
+      axios.post("https://hidden-citadel-00931.herokuapp.com/updateStocks",{
         selectedStocks: selectedStocks,
         userId: token.id
       }).then((response) => {
@@ -103,7 +103,7 @@ export default function StockTab(props) {
   };
 
   useEffect(() => {
-    axios.post("http://node-env.eba-2zra5gp3.us-east-2.elasticbeanstalk.com/getStocks",{
+    axios.post("https://hidden-citadel-00931.herokuapp.com/getStocks",{
       userId: token.id
     }).then((response) => {
       if(response.data != undefined){

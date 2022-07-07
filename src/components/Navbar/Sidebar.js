@@ -36,7 +36,7 @@ function Sidebar(props) {
     else if(selectedOption === 'stockbasket') history.push("/stockbasket");
     else if(selectedOption === 'stockinfo') history.push("/stockinfo");
     else if(selectedOption === 'logout'){
-      axios.post("http://node-env.eba-2zra5gp3.us-east-2.elasticbeanstalk.com/logout",{}).then((response) => {
+      axios.post("https://hidden-citadel-00931.herokuapp.com/logout",{}).then((response) => {
         if(response.data != undefined){
           console.log(response.data.res)
         }else{

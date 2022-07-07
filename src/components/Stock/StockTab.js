@@ -146,7 +146,7 @@ export default function StockTab(props) {
   }
 
 t3 = ((getT2-getT1)/getT1)*100;
-if(t3 === NaN) t3 = 0.00;
+if(isNaN(t3)) t3 = 0.00;
 
   let stocks = [
     'AAPL-Apple',

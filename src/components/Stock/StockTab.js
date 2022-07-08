@@ -17,7 +17,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 import Button from "@material-ui/core/Button";
 import axios from "axios";
 import CircularProgress from '@material-ui/core/CircularProgress';
-
+import Chip from '@material-ui/core/Chip';
 
 const useStyles = makeStyles((theme) => ({
   newsPage: {
@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(2),
   },
   newsPage3: {
-    marginTop: 100
+    marginTop: 80
   },
   compareValue:{
     paddingTop: 30,
@@ -49,6 +49,9 @@ const useStyles = makeStyles((theme) => ({
   loader:{
     paddingLeft: 1000,
     paddingTop: 300
+  },
+  chip: {
+    margin: 2,
   }
 }));
 
@@ -72,7 +75,7 @@ export default function StockTab(props) {
   const [fundsArray, setFundsArray] = React.useState([]);
   const [loader, setLoader] = React.useState(true);
   let finnApiKey = 'caps2uaad3i1rqbdg54g';
-  const apiKey = 'f11dc3a8ddc543feb3407e94dc150518';
+  const apiKey = 'caps2uaad3i1rqbdg54g';
   let [getT1, setT1] = React.useState(0);
   let [getT2, setT2] = React.useState(0);
   let  t3 = 0;
@@ -103,6 +106,7 @@ export default function StockTab(props) {
   };
 
   useEffect(() => {
+   setLoader(true);
     axios.post("https://hidden-citadel-00931.herokuapp.com/getStocks",{
       userId: token.id
     }).then((response) => {
@@ -134,15 +138,14 @@ export default function StockTab(props) {
         })
         .catch((error) => console.log(error));
       axios.get(
-      `https://api.twelvedata.com/eod?symbol=${myArray[0]}&apikey=${apiKey}`
+        `https://finnhub.io/api/v1/quote?symbol=${myArray[0]}&token=${apiKey}`
       )
       .then((response) => {
-        t2 = t2 + parseFloat(response.data.close);
+        t2 = t2 + response.data.c;
         setT2(t2);
       })
       .catch((error) => console.log(error));
   });
-  //setLoader(false);
   }
 
 t3 = ((getT2-getT1)/getT1)*100;
@@ -211,8 +214,14 @@ if(isNaN(t3)) t3 = 0.00;
                   multiple
                   value={selectedStocks}
                   onChange={handleChange}
-                  input={<Input />}
-                  renderValue={(selected) => selected.join(', ')}
+                  input={<Input/>}
+                  renderValue={(selected) => (
+                    <div className={classes.chips}>
+                  {selected.map((value) => (
+                    <Chip key={value} label={value} className={classes.chip} />
+                  ))}
+            </div>
+                  )}
                   MenuProps={MenuProps}
                 >
                   {stocks.map((stock, index) => {
